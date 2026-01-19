@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light,
           primaryColor: const Color(0xFF800020), // Deep Maroon
           scaffoldBackgroundColor: Colors.white,
-          textTheme: GoogleFonts.montserratTextTheme(
+          textTheme: GoogleFonts.poppinsTextTheme(
             Theme.of(context).textTheme,
           ),
           colorScheme: ColorScheme.fromSeed(

@@ -45,24 +45,7 @@ class Product3DScreen extends StatelessWidget {
                       cameraControls: true, 
                       // Customize ModelViewer appearance if possible or wrap in container
                     ),
-                    Positioned(
-                       bottom: 20,
-                       left: 0,
-                       right: 0,
-                       child: Center(
-                         child: Container(
-                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                           decoration: BoxDecoration(
-                             color: Colors.black.withOpacity(0.6),
-                             borderRadius: BorderRadius.circular(30),
-                           ),
-                           child: const Text(
-                             "Drag to Rotate • Pinch to Zoom",
-                             style: TextStyle(color: Colors.white70, fontSize: 12),
-                           ),
-                         ),
-                       ),
-                    ),
+
                   ],
                 ),
               ),
