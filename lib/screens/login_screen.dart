@@ -13,6 +13,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   late Animation<double> _fadeAnimation;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
   @override
@@ -36,20 +37,22 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   }
 
   void _handleLogin() async {
-    setState(() => _isLoading = true);
-    // Mock network delay
-    await Future.delayed(const Duration(seconds: 1));
-    if (mounted) {
-      setState(() => _isLoading = false);
-      Navigator.of(context).pushReplacement(
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              const Product3DScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-        ),
-      );
+    if (_formKey.currentState?.validate() ?? false) {
+      setState(() => _isLoading = true);
+      // Mock network delay
+      await Future.delayed(const Duration(seconds: 1));
+      if (mounted) {
+        setState(() => _isLoading = false);
+        Navigator.of(context).pushReplacement(
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                const Product3DScreen(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+          ),
+        );
+      }
     }
   }
 
@@ -90,70 +93,115 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: FadeTransition(
                 opacity: _fadeAnimation,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Text(
-                      'Welcome Back to VibeX',
-                      style: TextStyle(
-                        fontSize: 16,
-                        letterSpacing: 1.0,
-                        color: Colors.white70,
-                        fontWeight: FontWeight.bold,
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Text(
+                        'Welcome Back to VibeX',
+                        style: TextStyle(
+                          fontSize: 16,
+                          letterSpacing: 1.0,
+                          color: Colors.white70,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'VibeX',
-                      style: TextStyle(
-                        fontSize: 60,
-                        height: 0.9,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: -1.0,
+                      const SizedBox(height: 16),
+                      const Text(
+                        'VibeX',
+                        style: TextStyle(
+                          fontSize: 60,
+                          height: 0.9,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: -1.0,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 60),
-                    _buildTextField('Email Address', _emailController, false),
-                    const SizedBox(height: 20),
-                    _buildTextField('Password', _passwordController, true),
-                    const SizedBox(height: 40),
-                    SizedBox(
-                      height: 56,
-                      child: ElevatedButton(
-                        onPressed: _isLoading ? null : _handleLogin,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).primaryColor,
-                          foregroundColor: Colors.white,
-                          elevation: 8,
-                          shadowColor: Theme.of(context).primaryColor.withOpacity(0.5),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                      const SizedBox(height: 60),
+                      _buildTextField(
+                        label: 'Email Address', 
+                        controller: _emailController, 
+                        icon: Icons.email_outlined,
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          if (!value.contains('@')) {
+                            return 'Please enter a valid email';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      _buildTextField(
+                        label: 'Password', 
+                        controller: _passwordController, 
+                        isPassword: true,
+                        icon: Icons.lock_outline,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          if (value.length < 6) {
+                            return 'Password must be at least 6 characters';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            'Forgot Password?',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.7),
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
-                        child: _isLoading
-                            ? const SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : const Text(
-                                'SIGN IN',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.0,
-                                ),
-                              ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 24),
+                      SizedBox(
+                        height: 56,
+                        child: ElevatedButton(
+                          onPressed: _isLoading ? null : _handleLogin,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(context).primaryColor,
+                            foregroundColor: Colors.white,
+                            elevation: 8,
+                            shadowColor: Theme.of(context).primaryColor.withOpacity(0.5),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                          child: _isLoading
+                              ? const SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Text(
+                                  'SIGN IN',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.0,
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -163,23 +211,33 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     );
   }
 
-  Widget _buildTextField(
-      String label, TextEditingController controller, bool isPassword) {
+  Widget _buildTextField({
+    required String label, 
+    required TextEditingController controller, 
+    bool isPassword = false,
+    required IconData icon,
+    TextInputType? keyboardType,
+    String? Function(String?)? validator,
+  }) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.05),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.white.withOpacity(0.1)),
       ),
-      child: TextField(
+      child: TextFormField(
         controller: controller,
         obscureText: isPassword,
+        keyboardType: keyboardType,
+        validator: validator,
         style: const TextStyle(color: Colors.white),
         decoration: InputDecoration(
           labelText: label,
+          prefixIcon: Icon(icon, color: Colors.white70),
           labelStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          errorStyle: const TextStyle(color: Colors.redAccent),
         ),
       ),
     );
