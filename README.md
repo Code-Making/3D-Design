@@ -19,11 +19,8 @@ A premium Flutter application designed to showcase products in an interactive 3D
 
 ## Screenshots
 
-**Login Screen**
-![Login Screen](assets/iPhone-14-Plus-localhost%20(1).png)
-
-**Product 3D View**
-![Product 3D View](assets/iPhone-14-Plus-localhost%20(2).png)
-
-**Product Details Interaction**
-![Product Details](assets/iPhone-14-Plus-localhost%20(3).png)
+<p align="center">
+  <img src="assets/iPhone-14-Plus-localhost%20(1).png" width="220" />
+  <img src="assets/iPhone-14-Plus-localhost%20(2).png" width="220" />
+  <img src="assets/iPhone-14-Plus-localhost%20(3).png" width="220" />
+</p>
